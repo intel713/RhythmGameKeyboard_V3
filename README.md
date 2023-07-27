@@ -22,5 +22,7 @@ start버튼을 누른 채로 아두이노에 전원을 인가하면 ADOFAI(A Dan
 # 참고사항
 필요 라이브러리:
 Keyboard.h
+
 Encoder.h
+
 Adafruit_NeoPixel.h
