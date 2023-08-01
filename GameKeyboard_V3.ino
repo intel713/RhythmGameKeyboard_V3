@@ -18,8 +18,8 @@ int fxR = 9;
 
 int start = 10;
 
-Encoder volL(2, 14);
-Encoder volR(15, 3);
+int volLkey[2] = {2, 14};
+int volRkey[2] = {15, 3};
 
 //=====키 설정=====
 //!!대문자 금지!!
@@ -92,6 +92,8 @@ int br = 0;
 int inp[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 //btA, btB, btC, btD, fxA, fxB, start, volL, volR
 
+Encoder volL(volLkey[0], volLkey[1]);
+Encoder volR(volRkey[0], volRkey[1]);
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 void setup() {
@@ -128,7 +130,7 @@ void setup() {
   }
   
   while (digitalRead(start) == LOW) {
-    
+    //모드 변경 후 start버튼 입력을 중지할 때 까지 대기
   }
 }
 
