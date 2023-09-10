@@ -89,6 +89,7 @@ int com = 0;
 int r = 0, g = 0, b = 0, n = 0;
 int rp, gp, bp;
 int br = 0;
+int prs = 0;
 int inp[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 //btA, btB, btC, btD, fxA, fxB, start, volL, volR
 
@@ -247,13 +248,19 @@ void loop() {
 
 void ledCheck()
 {
+  strip.setBrightness(LED_BRIGHTNESS);
   int a = analogRead(A0);
   if(a < 100) {
     strip.clear();
     strip.show();
   }
   else if(100 <= a && a < 350) {
-    inputled();
+    if(mode == 0) {
+      inputled();
+    }
+    else {
+      inputrain(rainbowSpd);
+    }
   }
   else if(350 <= a && a < 400) {
     poten(400);
@@ -264,6 +271,28 @@ void ledCheck()
   else if(a >= 1000) {
     rainbow(rainbowSpd);
   }
+}
+
+void inputrain(int del)
+{
+  prs = 0;
+  for (int i = 0; i < 7; i++) {
+    if (inp[i] != 0) {
+      prs = 1;
+      break;
+    }
+  }
+  
+  if (prs == 0 && br > 0) {
+    br = br - 1;
+  }
+    
+  if(prs == 1) {
+    br = brTime;
+  }
+  
+  strip.setBrightness(map(br, brTime, 0, LED_BRIGHTNESS, 0));
+  rainbow(del);
 }
 
 void inputled()
@@ -315,15 +344,6 @@ void inputled()
   
   if(n == 0 && br > 0) {
     br = br - 1;
-    if(r > 0) {
-      r = map(br, 60, 0, rp, 0);
-    }
-    if(g > 0) {
-      g = map(br, 60, 0, gp, 0);
-    }
-    if(b > 0) {
-      b = map(br, 60, 0, bp, 0);
-    }
   }
     
   if(n != 0) {
@@ -331,14 +351,12 @@ void inputled()
     r = r / n;
     g = g / n;
     b = b / n;
-    rp = r;
-    gp = g;
-    bp = b;
   }
   
   for (int j = 0; j < strip.numPixels(); j++) {
     strip.setPixelColor(j, r, g, b);
   }
+  strip.setBrightness(map(br, brTime, 0, LED_BRIGHTNESS, 0));
   strip.show();
 }
 
