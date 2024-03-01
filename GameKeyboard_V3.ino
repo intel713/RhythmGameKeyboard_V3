@@ -42,7 +42,10 @@ int volRccwkey = 'l';
 #define LED_COUNT 48
 #define LED_BRIGHTNESS 100
 
-//무지개 모드에서의 색 변화 속도(숫자가 클수록 느려짐)
+//=====노브 감도 설정(수가 커질수록 둔감)=====
+#define SEN 2
+
+//무지개 모드에서의 색 변화 속도(수가 커질수록 느려짐)
 int rainbowSpd = 18;
 
 //버튼 입력 반응 모드
@@ -119,7 +122,7 @@ void setup() {
     btCkey = 215;
     btDkey = 'k';
     
-    fxLkey = 176;
+    fxLkey = 'c';
     fxRkey = 'p';
     
     startkey = 177;
@@ -207,14 +210,14 @@ void loop() {
   //아날로그 디바이스 입력 처리
   if (mode == 0) {
     //volL 엔코더 입력 처리
-    if (volL.read() > volLold) {
-      volLold = volL.read();
+    if (volL.read() / SEN > volLold) {
+      volLold = volL.read() / SEN;
       Keyboard.release(volLccwkey);
       Keyboard.press(volLcwkey);
       inp[7] = 1;
     }
-    else if (volL.read() < volLold) {
-      volLold = volL.read();
+    else if (volL.read() / SEN < volLold) {
+      volLold = volL.read() / SEN;
       Keyboard.release(volLcwkey);
       Keyboard.press(volLccwkey);
       inp[7] = -1;
@@ -225,14 +228,14 @@ void loop() {
       inp[7] = 0;
     }
     //volR 엔코더 입력 처리
-    if (volR.read() > volRold) {
-      volRold = volR.read();
+    if (volR.read() / SEN > volRold) {
+      volRold = volR.read() / SEN;
       Keyboard.release(volRccwkey);
       Keyboard.press(volRcwkey);
       inp[8] = 1;
     }
-    else if (volR.read() < volRold) {
-      volRold = volR.read();
+    else if (volR.read() / SEN < volRold) {
+      volRold = volR.read() / SEN;
       Keyboard.release(volRcwkey);
       Keyboard.press(volRccwkey);
       inp[8] = -1;
