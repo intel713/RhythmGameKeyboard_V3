@@ -22,7 +22,7 @@ int volLkey[2] = {2, 14};
 int volRkey[2] = {15, 3};
 
 //=====키 설정=====
-//!!대문자 금지!!
+//!!대문자 금지!! (대문자를 사용하면 아두이노가 Shift키를 동시에 입력함)
 int btAkey = 'd';
 int btBkey = 'f';
 int btCkey = 'j';
