@@ -121,6 +121,13 @@ void setup() {
     btBkey = 216;
     btCkey = 215;
     btDkey = 'k';
+
+    //start 키와 fxL과 fxR을 동시에 누른 채로 전원 인가시 btB와 btC 키 변경
+    if(digitalRead(fxL) == LOW && digitalRead(fxR) == LOW)
+    {
+      btBkey = 'a';
+      btCkey = 'b';
+    }
     
     fxLkey = 'c';
     fxRkey = 'p';
