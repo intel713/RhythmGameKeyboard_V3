@@ -42,7 +42,7 @@ int volRccwkey = 'l';
 #define LED_COUNT 48
 #define LED_BRIGHTNESS 100
 
-//=====노브 감도 설정(수가 커질수록 둔감)=====
+//=====노브 감도 설정(값이 커질수록 둔감)=====
 #define SEN 2
 
 //무지개 모드에서의 색 변화 속도(수가 커질수록 느려짐)
