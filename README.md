@@ -30,4 +30,4 @@ LED 가변저항 : `A0`<br>
 필요 라이브러리:<br>
 `Keyboard.h`<br>
 `Encoder.h`<br>
-`Adafruit_NeoPixel.h`
+`Adafruit_NeoPixel.h`<br>
