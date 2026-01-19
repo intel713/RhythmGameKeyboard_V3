@@ -84,7 +84,7 @@ int inpledset[22][3] =
 //==========변수 선언==========
 int mode = 0; //0:SDVX, 11:ADOFAI
 
-unsigned int time_old = micros();
+unsigned long int time_old = micros();
 
 unsigned long led_count = 0;
 unsigned long time_ms;
@@ -221,9 +221,9 @@ void loop() {
   //아날로그 디바이스 입력 처리
   if (mode == 0) {
     //노브 값을 시간에 대해 미분
-    int volL_current = volL.read();
-    int volR_current = volR.read();
-    unsigned int dt = micros() - time_old;
+    long int volL_current = volL.read();
+    long int volR_current = volR.read();
+    unsigned long int dt = micros() - time_old;
     float dLdt = 100000.0 * (volL_current - volL_old) / dt;
     float dRdt = 100000.0 * (volR_current - volR_old) / dt;
 
