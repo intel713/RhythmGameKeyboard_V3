@@ -22,7 +22,7 @@ int volLkey[2] = {2, 14};
 int volRkey[2] = {15, 3};
 
 //=====키 설정=====
-//!!대문자 금지!! (대문자를 사용하면 아두이노가 Shift키를 동시에 입력함)
+//!!대문자 금지!!
 int btAkey = 'd';
 int btBkey = 'f';
 int btCkey = 'j';
@@ -42,8 +42,8 @@ int volRccwkey = 'l';
 #define LED_COUNT 48
 #define LED_BRIGHTNESS 100
 
-//=====노브 감도 설정(값이 커질수록 둔감)=====
-#define SEN 2
+//=====노브 감도 설정(수가 커질수록 둔감)=====
+#define SENSITIVITY 20
 
 //무지개 모드에서의 색 변화 속도(수가 커질수록 느려짐)
 int rainbowSpd = 18;
@@ -84,6 +84,8 @@ int inpledset[22][3] =
 //==========변수 선언==========
 int mode = 0; //0:SDVX, 11:ADOFAI
 
+unsigned int time_old = micros();
+
 unsigned long led_count = 0;
 unsigned long time_ms;
 const int com_num = 9;
@@ -101,6 +103,7 @@ Encoder volR(volRkey[0], volRkey[1]);
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 void setup() {
+  Serial.begin(115200);
   pinMode(btA, INPUT_PULLUP);
   pinMode(btB, INPUT_PULLUP);
   pinMode(btC, INPUT_PULLUP);
@@ -109,6 +112,7 @@ void setup() {
   pinMode(fxR, INPUT_PULLUP);
   pinMode(start, INPUT_PULLUP);
   pinMode(16, OUTPUT);
+  //Keyboard.begin()
   strip.begin();
   strip.clear();
   strip.setBrightness(LED_BRIGHTNESS);
@@ -145,8 +149,8 @@ void setup() {
   }
 }
 
-long int volLold = volL.read();
-long int volRold = volR.read();
+long int volL_old = volL.read();
+long int volR_old = volR.read();
 
 void loop() {
   //BT 버튼 입력 처리
@@ -216,15 +220,20 @@ void loop() {
   
   //아날로그 디바이스 입력 처리
   if (mode == 0) {
+    //노브 값을 시간에 대해 미분
+    int volL_current = volL.read();
+    int volR_current = volR.read();
+    unsigned int dt = micros() - time_old;
+    float dLdt = 100000.0 * (volL_current - volL_old) / dt;
+    float dRdt = 100000.0 * (volR_current - volR_old) / dt;
+
     //volL 엔코더 입력 처리
-    if (volL.read() / SEN > volLold) {
-      volLold = volL.read() / SEN;
+    if (dLdt > SENSITIVITY) {
       Keyboard.release(volLccwkey);
       Keyboard.press(volLcwkey);
       inp[7] = 1;
     }
-    else if (volL.read() / SEN < volLold) {
-      volLold = volL.read() / SEN;
+    else if (dLdt < -SENSITIVITY) {
       Keyboard.release(volLcwkey);
       Keyboard.press(volLccwkey);
       inp[7] = -1;
@@ -234,15 +243,14 @@ void loop() {
       Keyboard.release(volLccwkey);
       inp[7] = 0;
     }
+    volL_old = volL_current;
     //volR 엔코더 입력 처리
-    if (volR.read() / SEN > volRold) {
-      volRold = volR.read() / SEN;
+    if (dRdt > SENSITIVITY) {
       Keyboard.release(volRccwkey);
       Keyboard.press(volRcwkey);
       inp[8] = 1;
     }
-    else if (volR.read() / SEN < volRold) {
-      volRold = volR.read() / SEN;
+    else if (dRdt < -SENSITIVITY) {
       Keyboard.release(volRcwkey);
       Keyboard.press(volRccwkey);
       inp[8] = -1;
@@ -252,7 +260,9 @@ void loop() {
       Keyboard.release(volRccwkey);
       inp[8] = 0;
     }
+    volR_old = volR_current;
   }
+  time_old = micros();
   ledCheck();
 }
 
